@@ -12,12 +12,12 @@ from flask import Flask, request, Response, jsonify, send_from_directory, abort
 import os
 
 # customize your API through the following parameters
-classes_path = './data/labels/coco.names'
+classes_path = './data/labels/object.names'
 weights_path = './weights/yolov3.tf'
 tiny = False                    # set to True if using a Yolov3 Tiny model
 size = 416                      # size images are resized to for model
 output_path = './detections/'   # path to output folder where images with detections are saved
-num_classes = 80                # number of classes in model
+num_classes = 5                # number of classes in model
 
 # load in weights and classes
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -39,7 +39,7 @@ print('classes loaded')
 app = Flask(__name__)
 
 # API that returns JSON with classes found in images
-@app.route('/detections', methods=['POST'])
+@app.route('/detect', methods=['POST'])
 def get_detections():
     raw_images = []
     images = request.files.getlist("images")
@@ -97,7 +97,7 @@ def get_detections():
         abort(404)
 
 # API that returns image with detections on it
-@app.route('/image', methods= ['POST'])
+@app.route('/img', methods= ['POST'])
 def get_image():
     image = request.files["images"]
     image_name = image.filename
